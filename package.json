@@ -26,12 +26,12 @@
         "last 2 Chrome versions"
     ],
     "scripts": {
-        "build": "parcel build  src/index.html --no-source-maps --public-url https://github.com/Dmytro-Shashkevych/craftoriumwallet.github.io",
-        "clean": "rimraf dist/index.html dist/src.*.css dist/src.*.js dist/src.*.map",
-        "predeploy": "npm run clean -s && npm run build -s",
-        "deploy": "gh-pages -d dist",
         "prebuild": "yarn clean",
+        "build": "parcel build  src/index.html --no-source-maps",
+        "clean": "rimraf ./dist && rimraf .parcel-cache",
         "fix": "eslint src/ --fix",
-        "start": "yarn prebuild && parcel src/index.html --open"
+        "start": "yarn prebuild && parcel src/index.html --open",
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d dist"
     }
 }
