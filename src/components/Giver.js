@@ -1,9 +1,8 @@
-import React, {useState} from 'react';
-import {flexClass, btnClass, qs} from '../App';
+import React, { useState } from 'react';
+import { flexClass, btnClass } from '../App';
 import Footer from './Footer';
 
-const {parseSeedPhrase, generateSeedPhrase} = require('near-seed-phrase');
-
+const { generateSeedPhrase } = require('near-seed-phrase');
 
 const baseUrl = window.location.href.substr(0, window.location.href.lastIndexOf('/'));
 const getLink = (accountId, key, wallet, message = '', link = '') =>
@@ -49,7 +48,6 @@ export const Giver = () => {
                         Generate My Account With Seed Phrase
                     </button>
 
-
                     {generatedSeedPhrase &&
                         (
                             <div className="mt-3">
@@ -71,7 +69,6 @@ export const Giver = () => {
 
                 </>
             )}
-
 
             <Footer/>
         </>

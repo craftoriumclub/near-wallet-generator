@@ -4,7 +4,6 @@
     "description": "React Parcel Boilerplate",
     "author": "Matt Lockyer",
     "license": "ISC",
-    "homepage": "https://github.com/Dmytro-Shashkevych/near-wallet-generator",
     "dependencies": {
         "animejs": "^3.2.1",
         "copy-to-clipboard": "^3.3.1",
@@ -18,19 +17,21 @@
         "@babel/preset-react": "^7.12.10",
         "babel-plugin-react-html-attrs": "^3.0.5",
         "eslint": "^7.14.0",
-        "gh-pages": "^3.2.3",
-        "gulp": "^4.0.2",
-        "gulp-gh-pages": "^0.5.4",
+        "gh-pages": "^3.1.0",
         "parcel": "^2.0.0-beta.1",
         "rimraf": "^3.0.2"
     },
+    "browserslist": [
+        "last 2 Chrome versions"
+    ],
     "scripts": {
+        "deploy:testnet": "yarn build && gh-pages -d dist",
+        "deploy": "REACT_APP_ENV=\"prod\" yarn build && cp -a static/* dist && gh-pages -d dist",
         "prebuild": "yarn clean",
-        "build": "parcel build  src/index.html --no-source-maps",
+        "build": "parcel build src/index.html --no-source-maps",
+        "build:prod": "REACT_APP_ENV=\"prod\" parcel build src/index.html --no-source-maps",
         "clean": "rimraf ./dist && rimraf .parcel-cache",
         "fix": "eslint src/ --fix",
-        "start": "yarn prebuild && parcel src/index.html --open",
-        "predeploy": "npm run build",
-        "deploy": "gh-pages -d dist"
+        "start": "yarn prebuild && parcel src/index.html --open"
     }
 }
