@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { flexClass, btnClass } from '../App';
+import React, {useState} from 'react';
+import {flexClass, btnClass} from '../App';
 import Footer from './Footer';
 
-const { generateSeedPhrase } = require('near-seed-phrase');
+const {generateSeedPhrase} = require('near-seed-phrase');
 
 const baseUrl = window.location.href.substr(0, window.location.href.lastIndexOf('/'));
 const getLink = (accountId, key, wallet, message = '', link = '') =>
@@ -11,9 +11,15 @@ const getLink = (accountId, key, wallet, message = '', link = '') =>
 export const Giver = () => {
 
     const [generatedSeedPhrase, setGeneratedSeedPhrase] = useState('');
+    const [publicKey, setPublicKey] = useState('');
+    const [secretKey, setSecretKey] = useState('');
+
     const generateWalletWithSeedPhrase = () => {
-        const {seedPhrase} = generateSeedPhrase();
+        const {seedPhrase, publicKey, secretKey} = generateSeedPhrase();
+
         setGeneratedSeedPhrase(seedPhrase);
+        setPublicKey(publicKey);
+        setSecretKey(secretKey);
     };
 
     return (
@@ -53,6 +59,10 @@ export const Giver = () => {
                             <div className="mt-3">
                                 <p>Generated Seed Phrase:</p>
                                 <p>{generatedSeedPhrase}</p>
+                                <p>Public key:</p>
+                                <p>{publicKey}</p>
+                                <p>Secret key:</p>
+                                <p>{secretKey}</p>
                             </div>)
                     }
 
