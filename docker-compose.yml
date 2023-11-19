@@ -5,6 +5,7 @@ services:
   wallet:
     container_name: near-wallet-generator
     build:
+      context: .
       dockerfile: docker/production/nginx/Dockerfile
     restart: always
     ports:
