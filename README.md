@@ -9,4 +9,4 @@ Run project production:
 
 > docker-compose up -d
 > 
-> Перед тим в Dockerfile "RUN yarn build" замінити на "RUN yarn build:prod"
+> Перед тим в Dockerfile "RUN yarn build:prod-test" замінити на "RUN yarn build:prod"

@@ -8,7 +8,7 @@ COPY package.json yarn.lock ./
 RUN yarn install
 COPY ./ ./
 #RUN yarn build:prod
-RUN yarn build
+RUN yarn build:prod-test
 
 FROM nginx:stable-alpine as production-stage
 COPY docker/production/nginx/conf.d /etc/nginx/conf.d
