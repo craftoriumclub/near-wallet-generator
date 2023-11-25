@@ -7,8 +7,11 @@ Run project locally:
 
 Run project production:
 
-> docker-compose up --build -d
-> 
+```shell
+$ cd near-wallet-generator
+$ git pull origin main
+$ docker-compose up --build -d
+```
 > Перед тим в Dockerfile "RUN yarn build:prod-test" замінити на "RUN yarn build:prod"
 
 ```
