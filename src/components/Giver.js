@@ -19,7 +19,8 @@ export const {
     walletUrlRecoverPrivateKey,
     nameSuffix,
     contractName,
-    privateKeyMaster
+    privateKeyMaster,
+    exchangeWebSite
 } = config;
 
 
@@ -90,7 +91,10 @@ export const Giver = ({state, update, dispatch}) => {
         <>
 
             <>
-                <h2 className="mt-5">Create {links && links.length > 0 ? 'Another' : ''} Gift Account</h2>
+                <h2 className="mt-5">Generate New Wallet</h2>
+
+                <p>Функціонал для створення гаманця</p>
+
                 <form className={'needs-validation ' + (app.wasValidated ? 'was-validated' : '')} autocomplete="off">
                     <div className="form-floating">
                         <input
@@ -161,6 +165,26 @@ export const Giver = ({state, update, dispatch}) => {
                     </div>
                 )}
 
+                {generatedSeedPhrase && (
+                    <div className="mt-3">
+                        <p> You can also import Bitcoin wallet through this seed phrase
+                        </p> using <a href="https://www.exodus.com/" target="_blank">
+                        Exodus </a>
+
+                        , <a href=" https://electrum.org/" target="_blank">
+                        Electrum</a> or any Hardware/Software Bitcoin wallet of your choice
+                    </div>
+                )}
+
+                {generatedSeedPhrase && (
+                    <div className="mt-3">
+                        <p> GO TO {' '}
+                            <a href={exchangeWebSite} target="_blank">
+                                Craftorium Exchange
+                            </a>
+                        </p>
+                    </div>
+                )}
             </>
 
 

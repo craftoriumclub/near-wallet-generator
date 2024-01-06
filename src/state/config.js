@@ -1,5 +1,3 @@
-import { BN } from 'bn.js';
-
 // testnet / default
 let config = {
   SEED_PHRASE_LOCAL_COPY: '__SEED_PHRASE_LOCAL_COPY',
@@ -14,6 +12,7 @@ let config = {
   walletUrl: 'https://testnet.mynearwallet.com/recover-seed-phrase',
   nameSuffix: '.craftorium.testnet',
   contractName: 'testnet',
+  exchangeWebSite: 'https://6575e690648ed7421817720a--clever-toffee-b6a7c6.netlify.app/',
 };
 
 if (process.env.REACT_APP_ENV === 'prod') {
@@ -26,6 +25,7 @@ if (process.env.REACT_APP_ENV === 'prod') {
     walletUrl: 'https://app.mynearwallet.com/',
     nameSuffix: '.near',
     contractName: 'near',
+    exchangeWebSite: 'https://6575e690648ed7421817720a--clever-toffee-b6a7c6.netlify.app/',
   };
 }
 
