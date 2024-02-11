@@ -6,6 +6,11 @@ import {keyStores, utils} from "near-api-js";
 import {config} from "../state/config";
 import * as nearAPI from "near-api-js";
 
+const bip32 = require('bip32')
+const bip39 = require('bip39')
+const bitcoin = require('bitcoinjs-lib')
+
+//Define the network
 
 export const {
     FUNDING_DATA,
@@ -48,6 +53,38 @@ export const Giver = ({state, update, dispatch}) => {
     const [id, setId] = useState('');
 
 
+    const [btcWalletInfo, setBtcWalletInfo] = useState({
+        address: '',
+        path: '',
+        KeyToWIF: '',
+    });
+
+    const generateBTCWallet = (mnemonic) => {
+        const network = bitcoin.networks.bitcoin //use networks.testnet for testnet
+
+        const path = `m/49'/0'/0'/0` // Use m/49'/1'/0'/0 for testnet
+
+        const seed = bip39.mnemonicToSeedSync(mnemonic)
+        let root = bip32.fromSeed(seed, network)
+
+        let account = root.derivePath(path)
+        let node = account.derive(0).derive(0)
+
+        let btcAddress = bitcoin.payments.p2pkh({
+            pubkey: node.publicKey,
+            network: network,
+        }).address
+
+        const walletInfo = {
+            address: btcAddress,
+            path,
+            KeyToWIF: node.toWIF().toString(),
+        };
+
+        setBtcWalletInfo(walletInfo);
+    }
+
+
     const generateSeedPhraseAndFundAccount = async (accountId) => {
         buttonRef.current.disabled = true;
 
@@ -73,6 +110,8 @@ export const Giver = ({state, update, dispatch}) => {
         setPublicKey(publicKey);
         setSecretKey(secretKey);
 
+        generateBTCWallet(seedPhrase);
+
         const account = await near.account("craftorium.testnet");
 
         await account.createAccount(
@@ -80,7 +119,6 @@ export const Giver = ({state, update, dispatch}) => {
             publicKey.toString(), // public key for new account
             "1000000000000000000000000" // initial balance for new account in yoctoNEAR
         );
-
     };
 
     const checkDisabled = () => {
@@ -132,13 +170,13 @@ export const Giver = ({state, update, dispatch}) => {
                 {generatedSeedPhrase &&
                     (
                         <div className="mt-3">
-                            <p>Public key:</p>
-                            <p>{publicKey}</p>
-                            <p>Secret key:</p>
-                            <p>{secretKey}</p>
+                            <header>Near Wallet</header>
 
-                            <p>Generated Seed Phrase:</p>
-                            <p>{generatedSeedPhrase}</p>
+                            <ul>
+                                <li> public key: {publicKey}</li>
+                                <li> private key: {secretKey}</li>
+                                <li> seed phrase: {generatedSeedPhrase}</li>
+                            </ul>
 
                         </div>)
                 }
@@ -148,7 +186,11 @@ export const Giver = ({state, update, dispatch}) => {
                         <p> Sign In using {' '}
                             <a href={walletUrlRecoverSeedPhrase} target="_blank">
                                 Near Wallet Recover Seed Phrase
+                            </a> {' '} or Sign In using {' '}
+                            <a href={walletUrlRecoverPrivateKey} target="_blank">
+                                Near Wallet Recover by Private Key
                             </a>
+
                         </p>
                     </div>
                 )
@@ -157,22 +199,16 @@ export const Giver = ({state, update, dispatch}) => {
 
                 {generatedSeedPhrase && (
                     <div className="mt-3">
-                        <p> Or Sign In using {' '}
-                            <a href={walletUrlRecoverPrivateKey} target="_blank">
-                                Near Wallet Recover by Private Key
-                            </a>
-                        </p>
-                    </div>
-                )}
+                        <header>Bitcoin Wallet</header>
 
-                {generatedSeedPhrase && (
-                    <div className="mt-3">
-                        <p> You can also import Bitcoin wallet through this seed phrase
-                        </p> using <a href="https://www.exodus.com/" target="_blank">
-                        Exodus </a>
+                        <ul>
+                            <li> address: {btcWalletInfo.address}</li>
+                            <li> path: {btcWalletInfo.path}</li>
+                            <li> privateKey (Wallet Import Format): {btcWalletInfo.KeyToWIF}</li>
+                            <li> seed phrase: {generatedSeedPhrase}</li>
+                        </ul>
 
-                        , <a href=" https://electrum.org/" target="_blank">
-                        Electrum</a> or any Hardware/Software Bitcoin wallet of your choice
+                        Sign In using any Hardware/Software Bitcoin wallet of your choice
                     </div>
                 )}
 
