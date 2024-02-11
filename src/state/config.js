@@ -12,7 +12,7 @@ let config = {
   walletUrl: 'https://testnet.mynearwallet.com/recover-seed-phrase',
   nameSuffix: '.craftorium.testnet',
   contractName: 'testnet',
-  exchangeWebSite: 'https://6575e690648ed7421817720a--clever-toffee-b6a7c6.netlify.app/',
+  craftoriumEcosystemWebSite: 'https://6575e690648ed7421817720a--clever-toffee-b6a7c6.netlify.app/',
 };
 
 if (process.env.REACT_APP_ENV === 'prod') {

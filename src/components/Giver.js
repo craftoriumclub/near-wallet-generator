@@ -25,7 +25,7 @@ export const {
     nameSuffix,
     contractName,
     privateKeyMaster,
-    exchangeWebSite
+    craftoriumEcosystemWebSite
 } = config;
 
 
@@ -215,8 +215,8 @@ export const Giver = ({state, update, dispatch}) => {
                 {generatedSeedPhrase && (
                     <div className="mt-3">
                         <p> GO TO {' '}
-                            <a href={exchangeWebSite} target="_blank">
-                                Craftorium Exchange
+                            <a href={craftoriumEcosystemWebSite} target="_blank">
+                                Craftorium Ecosystem
                             </a>
                         </p>
                     </div>
