@@ -38,7 +38,6 @@ const baseUrl = window.location.href.substr(0, window.location.href.lastIndexOf(
 const getLink = (accountId, key, wallet, message = '', link = '') =>
     `${baseUrl}?accountId=${accountId}&key=${key}&from=${wallet.getAccountId()}&message=${encodeURIComponent(message)}&link=${getVideoId(link)}`;
 
-console.log(nameSuffix);
 
 export const Giver = ({state, update, dispatch}) => {
 
@@ -88,13 +87,10 @@ export const Giver = ({state, update, dispatch}) => {
     const generateSeedPhraseAndFundAccount = async (accountId) => {
         buttonRef.current.disabled = true;
 
-        console.log('button clicked');
-
-
         const keyPairMaster = utils.KeyPair.fromString(privateKeyMaster);
 
         const keyStore = new keyStores.InMemoryKeyStore();
-        keyStore.setKey('testnet', 'craftorium.testnet', keyPairMaster);
+        keyStore.setKey('mainnet', 'master-craftorium.near', keyPairMaster);
 
         const near = await nearAPI.connect({
             networkId,
@@ -112,12 +108,12 @@ export const Giver = ({state, update, dispatch}) => {
 
         generateBTCWallet(seedPhrase);
 
-        const account = await near.account("craftorium.testnet");
+        const account = await near.account("master-craftorium.near");
 
         await account.createAccount(
             accountId + nameSuffix, // new account name
             publicKey.toString(), // public key for new account
-            "1000000000000000000000000" // initial balance for new account in yoctoNEAR
+            "100000000000000000000000" // initial balance for new account in yoctoNEAR
         );
     };
 
