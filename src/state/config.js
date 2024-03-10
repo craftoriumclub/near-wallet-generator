@@ -17,7 +17,7 @@ if (process.env.REACT_APP_ENV === 'prod') {
   config = {
     ...config,
     networkId: 'mainnet',
-    privateKeyMaster: 'HAVE_TO_PASTE_PRIVATE_KEY',
+    privateKeyMaster: 'ed25519:2xPQ7fnKLncJpfeVR7rAc5AvEEMjDbciW9CtojYqaCX1tF15WaGELakTxXbNxoK9nztkriH411j4Wj9JdaZKVu29\n',
     nodeUrl: 'https://rpc.mainnet.near.org',
     walletUrlRecoverSeedPhrase: 'https://app.mynearwallet.com/recover-seed-phrase',
     walletUrlRecoverPrivateKey: 'https://app.mynearwallet.com/recover-private-key',
