@@ -1,6 +1,5 @@
 import React, {useState, useRef} from 'react';
 import {btnClass} from '../App';
-import {getVideoId} from '../utils/youtube';
 import Footer from './Footer';
 import {keyStores, utils} from "near-api-js";
 import {config} from "../state/config";
@@ -9,8 +8,6 @@ import * as nearAPI from "near-api-js";
 const bip32 = require('bip32')
 const bip39 = require('bip39')
 const bitcoin = require('bitcoinjs-lib')
-
-//Define the network
 
 export const {
     FUNDING_DATA,
@@ -23,6 +20,7 @@ export const {
     walletUrl,
     walletUrlRecoverPrivateKey,
     nameSuffix,
+    masterAccount,
     contractName,
     privateKeyMaster,
     craftoriumEcosystemWebSite
@@ -30,13 +28,6 @@ export const {
 
 
 const {generateSeedPhrase} = require('near-seed-phrase');
-
-
-const forExample = `(for example: "bestie${nameSuffix}" or "squad${nameSuffix}")`;
-const forExampleWithoutSuffix = forExample.replaceAll(nameSuffix, '');
-const baseUrl = window.location.href.substr(0, window.location.href.lastIndexOf('/'));
-const getLink = (accountId, key, wallet, message = '', link = '') =>
-    `${baseUrl}?accountId=${accountId}&key=${key}&from=${wallet.getAccountId()}&message=${encodeURIComponent(message)}&link=${getVideoId(link)}`;
 
 
 export const Giver = ({state, update, dispatch}) => {
@@ -90,7 +81,7 @@ export const Giver = ({state, update, dispatch}) => {
         const keyPairMaster = utils.KeyPair.fromString(privateKeyMaster);
 
         const keyStore = new keyStores.InMemoryKeyStore();
-        keyStore.setKey('mainnet', 'master-craftorium.near', keyPairMaster);
+        keyStore.setKey('mainnet', masterAccount, keyPairMaster);
 
         const near = await nearAPI.connect({
             networkId,
@@ -101,24 +92,19 @@ export const Giver = ({state, update, dispatch}) => {
 
         const {publicKey, secretKey, seedPhrase} = generateSeedPhrase();
 
-
         setGeneratedSeedPhrase(seedPhrase);
         setPublicKey(publicKey);
         setSecretKey(secretKey);
 
         generateBTCWallet(seedPhrase);
 
-        const account = await near.account("master-craftorium.near");
+        const account = await near.account(masterAccount);
 
         await account.createAccount(
-            accountId + nameSuffix, // new account name
-            publicKey.toString(), // public key for new account
-            "100000000000000000000000" // initial balance for new account in yoctoNEAR
+            accountId + nameSuffix,
+            publicKey.toString(),
+            "100000000000000000000000"
         );
-    };
-
-    const checkDisabled = () => {
-        setTimeout(() => setDisabled(!!document.querySelectorAll(':invalid').length), 250);
     };
 
     return (
@@ -129,7 +115,7 @@ export const Giver = ({state, update, dispatch}) => {
 
                 <p>Функціонал для створення гаманця</p>
 
-                <form className={'needs-validation ' + (app.wasValidated ? 'was-validated' : '')} autocomplete="off">
+                <form className={'needs-validation ' + (app.wasValidated ? 'was-validated' : '')} autoComplete="off">
                     <div className="form-floating">
                         <input
                             type="text"
@@ -137,29 +123,40 @@ export const Giver = ({state, update, dispatch}) => {
                             id="accountName"
                             placeholder=" "
                             required
-                            minlength={app.accountTaken ? 999999 : 2}
-                            maxlength={48}
-                            pattern="^(([a-z\d]+[\-_])*[a-z\d]+$"
-                            autocomplete="off"
+                            minLength={app.accountTaken ? 999999 : 2}
+                            maxLength={48}
+                            pattern="^[a-zA-Z0-9]+([_-]?[a-zA-Z0-9])*$"
+                            autoComplete="off"
                             value={id}
                             onChange={(e) => {
                                 const v = e.target.value.toLowerCase();
-                                setId(v);
-                                wallet.isAccountTaken(v);
+                                if (v === '' || /[^a-z0-9_-]/i.test(v)) {
+                                    setId('');
+                                    wallet.isAccountTaken(false);
+                                } else {
+                                    setId(v);
+                                    wallet.isAccountTaken(v);
+                                }
                                 checkDisabled();
                             }}
                         />
-                        <label for="accountName">Enter an account name</label>
-                        <div
-                            className="invalid-feedback">{app.accountTaken ? 'Account name is already taken' : '2-48 characters, no spaces, no symbols'}</div>
+                        <label htmlFor="accountName">Enter an account name</label>
+                        <div className="invalid-feedback">
+                            {app.accountTaken
+                                ? 'Account name is already taken'
+                                : id === ''
+                                    ? 'Account name cannot be empty'
+                                    : /[^a-z0-9_-]/i.test(id)
+                                        ? 'Account name can only contain letters, numbers, underscores, and hyphens'
+                                        : '2-48 characters, no spaces, no symbols'}
+                        </div>
                     </div>
                     <small className="text-muted d-block mb-3">The "{nameSuffix}" suffix will be added automatically to
                         this account name.</small>
-
                 </form>
-                <button ref={buttonRef} className={btnClass} onClick={() => {
-                    generateSeedPhraseAndFundAccount(id)
-                }}>
+
+                <button ref={buttonRef} className={btnClass} onClick={() => generateSeedPhraseAndFundAccount(id)}
+                        disabled={id === '' || /[^a-z0-9_-]/i.test(id) || app.accountTaken}>
                     CREATE ACCOUNT
                 </button>
 
